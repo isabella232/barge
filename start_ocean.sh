@@ -25,13 +25,13 @@ DIR="${DIR/ /\\ }"
 COMPOSE_DIR="${DIR}/compose-files"
 
 # Default versions of Aquarius, Brizo, Keeper Contracts and Commons
-export AQUARIUS_VERSION=${AQUARIUS_VERSION:-v0.3.9}
-export BRIZO_VERSION=${BRIZO_VERSION:-v0.4.6}
-export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.1.2}
+export AQUARIUS_VERSION=${AQUARIUS_VERSION:-v1.0.5}
+export BRIZO_VERSION=${BRIZO_VERSION:-v0.7.2}
+export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.3.4}
 export KEEPER_VERSION=${KEEPER_VERSION:-v0.12.7}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.3.2}
-export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v1.3.1}
-export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v1.3.1}
+export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v2.0.0}
+export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.0.0}
 
 export PARITY_IMAGE="parity/parity:v2.5.7-stable"
 
@@ -123,6 +123,8 @@ export COMMONS_AQUARIUS_URI=${AQUARIUS_URI}
 export COMMONS_FAUCET_URL=${FAUCET_URL}
 export COMMONS_IPFS_GATEWAY_URI=https://ipfs.oceanprotocol.com
 export COMMONS_IPFS_NODE_URI=https://ipfs.oceanprotocol.com:443
+
+export OPERATOR_SERVICE_URL=http://127.0.0.1:8050
 
 # Export User UID and GID
 export LOCAL_USER_ID=$(id -u)
@@ -348,7 +350,6 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store_signing_node.yml/}"
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="development"
-            export KEEPER_DEPLOY_CONTRACTS="true"
             printf $COLOR_Y'Starting with local Ganache node...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store signing node...\n\n'$COLOR_RESET
@@ -390,8 +391,15 @@ while :; do
             # use this seed only on spree!
             export KEEPER_MNEMONIC="taxi music thumb unique chat sand crew more leg another off lamp"
             export KEEPER_NETWORK_NAME="spree"
-            export KEEPER_DEPLOY_CONTRACTS="true"
             printf $COLOR_Y'Starting with local Spree node...\n\n'$COLOR_RESET
+            ;;
+        --local-spree-no-deploy)
+            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
+            # use this seed only on spree!
+            export KEEPER_MNEMONIC="taxi music thumb unique chat sand crew more leg another off lamp"
+            export KEEPER_NETWORK_NAME="spree"
+            export KEEPER_DEPLOY_CONTRACTS="false"
+	    printf $COLOR_Y'Starting with local Spree node, and keeping existing contracts (no deployment)...\n\n'$COLOR_RESET
             ;;
         #################################################
         # Cleaning switches
